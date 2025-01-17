@@ -6,15 +6,6 @@
 </template>
 
 <script>
-export default {
-  name: 'NewProjectButton',
-  props: {
-    isAtHome: {
-      type: Boolean,
-      required: true
-    },
-  },
-};
 </script>
 
 <style scoped>

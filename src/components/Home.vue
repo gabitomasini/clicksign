@@ -1,19 +1,24 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import Button from './Button.vue'
+import ProjectCard from './ProjectCard.vue'
 
-defineProps<{ msg: string }>()
+import { computed } from 'vue'
 
-const count = ref(0)
-const isAtHome = ref(true)
+const projectsInProgress = computed(() => {
+  console.log('aqui =>', JSON.parse(localStorage.getItem("projetos") || "[]"))
+  return JSON.parse(localStorage.getItem("projetos") || "[]")
+})
 </script>
 
 <template>
   <main class="main-content">
-    <section class="empty-state">
+    <section class="empty-state" v-if="!projectsInProgress">
       <h1>Nenhum projeto</h1>
       <p>Clique no botão abaixo para criar o primeiro e gerenciá-lo.</p>
       <Button></Button>
+    </section>
+    <section v-else class="cards-container">
+      <ProjectCard v-for="project in projectsInProgress" :key="project.nome" :projeto="project"></ProjectCard>
     </section>
   </main>
 
@@ -44,5 +49,12 @@ const isAtHome = ref(true)
   font-size: 1rem;
   color: var(--text-light);
   margin-bottom: 2rem;
+}
+
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
 }
 </style>
