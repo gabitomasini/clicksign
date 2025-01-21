@@ -1,89 +1,140 @@
-<template>
-  <div class="container">
-    <router-link to="/" class="voltar">← Voltar</router-link>
-    <h1>Novo projeto</h1>
-    <form @submit.prevent="saveNewProject">
-      <div class="form-group">
-        <label for="nome">Nome do projeto <span>(Obrigatório)</span></label>
-        <input type="text" id="nome" v-model="projeto.nome" required />
-      </div>
-
-      <div class="form-group">
-        <label for="cliente">Cliente <span>(Obrigatório)</span></label>
-        <input type="text" id="cliente" v-model="projeto.cliente" required />
-      </div>
-
-      <div class="form-group datas">
-        <div class="data-group">
-          <label for="dataInicio">Data de Início <span>(Obrigatório)</span></label>
-          <input type="date" id="dataInicio" v-model="projeto.dataInicio" required />
-        </div>
-        <div class="data-group">
-          <label for="dataFinal">Data Final <span>(Obrigatório)</span></label>
-          <input type="date" id="dataFinal" v-model="projeto.dataFinal" required />
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Capa do projeto</label>
-        <div class="project-cover">
-          <UploadFile />
-          <div class="cover-preview">
-            <img v-if="projeto.capa" :src="URL.createObjectURL(projeto.capa)" alt="Capa do projeto" />
-            <p v-else>Preview da capa</p>
-          </div>
-        </div>
-      </div>
-      <button type="submit" class="salvar">Salvar projeto</button>
-    </form>
-  </div>
-</template>
-
 <script lang="ts">
 import { defineComponent, reactive } from "vue";
 import UploadFile from "./UploadFile.vue";
 import { Projeto } from "../interface/project";
+import Button from "./Button.vue";
 import { getProjects, setProjects } from "../helpers/LocalStorage";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "NovoProjeto",
   components: {
     UploadFile,
+    Button,
   },
   setup() {
     const projeto = reactive<Projeto>({
+      id: Math.floor(Math.random() * 1000),
       nome: "",
       cliente: "",
       dataInicio: "",
       dataFinal: "",
-      capa: null as File | null,
+      capa: null as string | null,
     });
 
+    const router = useRouter();
+
     const saveNewProject = () => {
-      if (projeto.nome && projeto.cliente && projeto.dataInicio && projeto.dataFinal) {
+      if (
+        projeto.nome &&
+        projeto.cliente &&
+        projeto.dataInicio &&
+        projeto.dataFinal &&
+        projeto.capa
+      ) {
         const projetosSalvo = getProjects();
         projetosSalvo.push({ ...projeto });
         setProjects(projetosSalvo);
-        alert("Projeto salvo com sucesso!");
-      } else {
-        alert("Por favor, preencha todos os campos obrigatórios.");
+        router.push("/");
       }
     };
 
-    return { projeto, saveNewProject };
+    const handleFileUpload = (base64: string) => {
+      projeto.capa = base64;
+    };
+
+    return { projeto, saveNewProject, handleFileUpload };
   },
 });
 </script>
+
+<template>
+  <div class="top-bar">
+    <router-link to="/" class="voltar">← Voltar</router-link>
+    <h1 class="section-title">Novo projeto</h1>
+  </div>
+  <div class="container">
+    <form @submit.prevent="saveNewProject">
+      <div class="form-group">
+        <div class="label-span-container">
+          <label for="nome">Nome do projeto </label><span>(Obrigatório)</span>
+        </div>
+        <input type="text" id="nome" v-model="projeto.nome" required />
+      </div>
+
+      <div class="form-group">
+        <div class="label-span-container">
+          <label for="cliente">Cliente </label><span>(Obrigatório)</span>
+        </div>
+        <input type="text" id="cliente" v-model="projeto.cliente" required />
+      </div>
+
+      <div class="form-group datas">
+        <div class="data-group">
+          <div class="label-span-container">
+            <label for="dataInicio">Data de Início </label
+            ><span>(Obrigatório)</span>
+          </div>
+          <input
+            class="input-date"
+            type="date"
+            id="dataInicio"
+            v-model="projeto.dataInicio"
+            required
+          />
+        </div>
+        <div class="data-group">
+          <div class="label-span-container">
+            <label for="dataFinal">Data Final </label><span>(Obrigatório)</span>
+          </div>
+          <input
+            class="input-date"
+            type="date"
+            id="dataFinal"
+            v-model="projeto.dataFinal"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="project-cover">
+          <label>Capa do projeto</label>
+          <UploadFile @file-uploaded="handleFileUpload" />
+        </div>
+      </div>
+      <Button
+        buttonClass="save-project"
+        text="Salvar projeto"
+        style="width: 100%"
+        @button-click="saveNewProject"
+      ></Button>
+    </form>
+  </div>
+</template>
 
 <style scoped>
 .container {
   max-width: 600px;
   margin: 50px auto;
   background-color: #faf7ff;
-  padding: 30px;
+  padding: 100px;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   font-family: "Inter", sans-serif;
+  border: 1px solid #d3d3d3;
+}
+
+.label-span-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.top-bar {
+  padding: 20px 0px 10px 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .voltar {
@@ -106,8 +157,16 @@ h1 {
 
 label {
   font-size: 1rem;
-  color: #4a4a4a;
+  color: #695ccd;
   font-weight: 600;
+  margin-bottom: 5px;
+  display: block;
+}
+
+span {
+  font-size: 1rem;
+  color: #919191;
+  font-weight: 300;
   margin-bottom: 5px;
   display: block;
 }
@@ -123,6 +182,10 @@ input[type="date"] {
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
   background-color: #fff;
   color: #4a4a4a;
+}
+
+.input-date {
+  max-width: 90%;
 }
 
 input[type="text"]:focus,
@@ -143,7 +206,7 @@ input[type="date"]:focus {
 }
 
 .project-cover {
-  text-align: center;
+  text-align: start;
   margin-top: 20px;
 }
 
@@ -179,5 +242,11 @@ button.salvar {
 
 button.salvar:hover {
   background-color: #5945d6;
+}
+
+.section-title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #1f1283;
 }
 </style>

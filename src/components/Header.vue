@@ -1,20 +1,18 @@
 <script setup lang="ts">
-import { defineProps, ref, computed } from 'vue';
+import { computed } from "vue";
 
-const currentUrl = computed(() => {
-  return window.location.href
-})
+import { useRoute } from "vue-router";
 
+const route = useRoute();
 const shouldDisplaySearchInput = computed(() => {
-  return !currentUrl.value.includes('new-project')
-})
-
+  return !route.path.includes("new-project");
+});
 </script>
 
 <template>
   <header class="header">
     <div class="header-logo">
-      <img src="../assets/gerenciadorx.svg" alt="Teste">
+      <img src="../assets/gerenciadorx.svg" alt="Teste" />
     </div>
     <div class="header-search" v-if="shouldDisplaySearchInput">
       <input type="search" placeholder="Buscar..." />
@@ -24,9 +22,9 @@ const shouldDisplaySearchInput = computed(() => {
 
 <style scoped>
 .header {
- display: flex;
-  justify-content: space-between; /* Espaça os elementos à esquerda e à direita */
-  align-items: center; /* Alinha os itens verticalmente */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 1.5rem 2rem;
   background-color: #1c1930;
   color: #fff;
@@ -34,24 +32,24 @@ const shouldDisplaySearchInput = computed(() => {
 
 .header-logo {
   display: flex;
-  justify-content: center; /* Centraliza o logo dentro do espaço disponível */
+  justify-content: center;
   align-items: center;
   position: absolute;
   left: 50%;
-  transform: translateX(-50%); /* Centraliza o logo na tela */
+  transform: translateX(-50%);
 }
 
 .header-logo img {
-    height: 70px;
+  height: 70px;
   margin-right: 1rem;
 }
 
 .header-search {
-  margin-left: auto; /* Move a barra de pesquisa para o canto direito */
+  margin-left: auto;
 }
 
 .header-search input {
-   padding: 0.5rem 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 4px;
   border: none;
   background-color: #fff;

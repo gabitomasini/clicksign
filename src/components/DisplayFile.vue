@@ -1,9 +1,11 @@
-<!-- DisplayFile.vue -->
 <template>
   <div>
-    <h2>Miniatura do Arquivo</h2>
-    <div v-if="storedFilePreview">
-      <img :src="storedFilePreview" alt="Miniatura do Arquivo" />
+    <div class="image-container" v-if="filePreview">
+      <img
+        :src="filePreview"
+        alt="Miniatura do Arquivo"
+        class="resizable-image"
+      />
     </div>
     <div v-else>
       <p>Nenhum arquivo selecionado.</p>
@@ -12,18 +14,32 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { onMounted } from "vue";
 
-const storedFilePreview = ref(null);
+const props = defineProps({
+  filePreview: String,
+});
 
 onMounted(() => {
-  storedFilePreview.value = localStorage.getItem("filePreview");
+  console.log("File preview:", props.filePreview);
 });
 </script>
 
 <style scoped>
-  img {
-    max-width: 100%;
-    height: auto;
-  }
+.image-container {
+  /* Garantir que o contêiner ocupe o máximo do pai */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.resizable-image {
+  /* A imagem vai ocupar no máximo 100% da largura e altura do contêiner */
+  max-width: 40%;
+  max-height: 40%;
+  object-fit: contain; /* Isso mantém a proporção da imagem */
+}
 </style>

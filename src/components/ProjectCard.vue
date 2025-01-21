@@ -1,8 +1,12 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
+import DisplayFile from "./DisplayFile.vue";
 
 export default defineComponent({
   name: "ProjectCard",
+  components: {
+    DisplayFile, // Registre o componente aqui
+  },
   props: {
     projeto: {
       type: Object as () => {
@@ -10,15 +14,15 @@ export default defineComponent({
         cliente: string;
         dataInicio: string;
         dataFinal: string;
-        imagem: string;
+        capa: string;
         favorito: boolean;
       },
-      required: true
+      required: true,
     },
     index: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   setup(props) {
     const isDropdownOpen = ref(false);
@@ -33,24 +37,35 @@ export default defineComponent({
     };
 
     const formatarData = (data: string): string => {
-      const opcoes = { year: "numeric", month: "long", day: "numeric" } as const;
-      return new Date(data).toLocaleDateString("pt-BR", opcoes);
+      const dataLocal = new Date(data + "T00:00:00");
+      const opcoes = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      } as const;
+
+      return dataLocal.toLocaleDateString("pt-BR", opcoes);
     };
 
     const formatedIndex = computed(() => {
-    return props.index <= 9 ? '0' + (props.index + 1) : props.index + 1;
-  });
+      return props.index <= 9 ? "0" + (props.index + 1) : props.index + 1;
+    });
 
-  return { toggleFavorito, toggleDropdown, isDropdownOpen, formatarData, formatedIndex };
-},
+    return {
+      toggleFavorito,
+      toggleDropdown,
+      isDropdownOpen,
+      formatarData,
+      formatedIndex,
+    };
+  },
 });
 </script>
-
 
 <template>
   <div class="card">
     <div class="card-header">
-      <img :src="projeto.imagem" alt="Capa do projeto" class="card-image" />
+      <DisplayFile :filePreview="projeto.capa"></DisplayFile>
       <!-- <button class="favoritar" @click="toggleFavorito">
         <span :class="projeto.favorito ? 'favorito' : 'nao-favorito'">★</span>
       </button> -->
@@ -64,7 +79,7 @@ export default defineComponent({
       <h3>Projeto {{ formatedIndex }}</h3>
       <p>Cliente: {{ projeto.cliente }}</p>
       <div class="card-dates">
-        <hr>
+        <hr />
         <div>
           <p>{{ formatarData(projeto.dataInicio) }}</p>
         </div>
@@ -167,7 +182,7 @@ h3 {
   color: #1f1283;
 }
 
-.card-body h3, 
+.card-body h3,
 .card-body p {
   width: 100%;
   text-align: left;
@@ -194,5 +209,4 @@ hr {
   background-color: #e9e9e9;
   margin: 10px 0;
 }
-
 </style>

@@ -1,34 +1,46 @@
 <script setup lang="ts">
-import Button from './Button.vue'
-import ProjectCard from './ProjectCard.vue'
+import Button from "./Button.vue";
+import ProjectCard from "./ProjectCard.vue";
 
-import { computed, ref } from 'vue'
+import { useRouter } from "vue-router";
+import { computed, ref } from "vue";
 
-const isFavorite = ref(false)
+const router = useRouter();
 
-const sortOption = ref('alphabetical')
+const isFavorite = ref(false);
+
+const sortOption = ref("alphabetical");
 
 const projectsInProgress = computed(() => {
-  return JSON.parse(localStorage.getItem("projetos") || "[]")
-})
+  return JSON.parse(localStorage.getItem("projetos") || "[]");
+});
 
 const sortedProjects = computed(() => {
-  let sorted = [...projectsInProgress.value]
-  
-  switch (sortOption.value) {
-    case 'alphabetical':
-      sorted.sort((a, b) => a.nome.localeCompare(b.nome))
-      break
-    case 'recent':
-      sorted.sort((a, b) => new Date(b.iniciado).getTime() - new Date(a.iniciado).getTime())
-      break
-    case 'due-date':
-      sorted.sort((a, b) => new Date(a.prazo).getTime() - new Date(b.prazo).getTime())
-      break
-  }
-  return sorted
-})
+  let sorted = [...projectsInProgress.value];
 
+  switch (sortOption.value) {
+    case "alphabetical":
+      sorted.sort((a, b) => a.nome.localeCompare(b.nome));
+      break;
+    case "recent":
+      sorted.sort(
+        (a, b) =>
+          new Date(b.dataInicio).getTime() - new Date(a.dataInicio).getTime()
+      );
+      break;
+    case "due-date":
+      sorted.sort(
+        (a, b) =>
+          new Date(b.dataFinal).getTime() - new Date(a.dataFinal).getTime()
+      );
+      break;
+  }
+  return sorted;
+});
+
+function goToNewProject() {
+  router.push("/new-project");
+}
 </script>
 
 <template>
@@ -36,16 +48,29 @@ const sortedProjects = computed(() => {
     <section class="empty-state" v-if="projectsInProgress.length === 0">
       <h1>Nenhum projeto</h1>
       <p>Clique no botão abaixo para criar o primeiro e gerenciá-lo.</p>
-      <Button class="new-project-button"></Button>
+      <Button
+        buttonClass="add-new-project"
+        text="Novo projeto"
+        @button-click="goToNewProject"
+      ></Button>
     </section>
     <section v-else class="cards-container">
       <div class="top-information">
-        <h1 class="section-title">Projetos ({{projectsInProgress.length}})</h1>
+        <h1 class="section-title">
+          Projetos ({{ projectsInProgress.length }})
+        </h1>
         <div class="project-control">
-           <div class="toggle-container">
-            <input type="checkbox" id="favorite-toggle" v-model="isFavorite" class="toggle" />
+          <div class="toggle-container">
+            <input
+              type="checkbox"
+              id="favorite-toggle"
+              v-model="isFavorite"
+              class="toggle"
+            />
             <label for="favorite-toggle" class="toggle-label"></label>
-            <label for="favorite-toggle" class="toggle-text">Apenas Favoritos</label>
+            <label for="favorite-toggle" class="toggle-text"
+              >Apenas Favoritos</label
+            >
           </div>
           <div class="sort-dropdown">
             <select v-model="sortOption" id="sort-order">
@@ -54,21 +79,24 @@ const sortedProjects = computed(() => {
               <option value="due-date">Prazo mais próximo</option>
             </select>
           </div>
-        <Button></Button>
+          <Button
+            buttonClass="new-project-button"
+            text="Novo projeto"
+            @button-click="goToNewProject"
+          ></Button>
         </div>
       </div>
-      
-        <div class="cards-wrapper">
-          <ProjectCard
+
+      <div class="cards-wrapper">
+        <ProjectCard
           v-for="(project, index) in sortedProjects"
           :key="project.nome"
           :projeto="project"
           :index="index"
-          />
-        </div>
+        />
+      </div>
     </section>
   </main>
-
 </template>
 
 <style scoped>
@@ -80,7 +108,7 @@ const sortedProjects = computed(() => {
 }
 
 .empty-state {
-   display: flex;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -90,7 +118,6 @@ const sortedProjects = computed(() => {
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  
 }
 .new-project-button {
   display: flex;
@@ -107,7 +134,6 @@ const sortedProjects = computed(() => {
   color: var(--text-light);
   margin-bottom: 2rem;
 }
-
 
 .top-information {
   display: flex;
@@ -171,7 +197,7 @@ const sortedProjects = computed(() => {
 }
 
 .toggle-label::before {
-  content: '';
+  content: "";
   width: 20px;
   height: 20px;
   background-color: white;
