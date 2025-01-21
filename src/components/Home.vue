@@ -17,16 +17,15 @@ const sortedProjects = computed(() => {
   
   switch (sortOption.value) {
     case 'alphabetical':
-      sorted.sort((a, b) => a.nome.localeCompare(b.nome)) // Ordem alfabética
+      sorted.sort((a, b) => a.nome.localeCompare(b.nome))
       break
     case 'recent':
-      sorted.sort((a, b) => new Date(b.iniciado).getTime() - new Date(a.iniciado).getTime()) // Iniciados mais recentes
+      sorted.sort((a, b) => new Date(b.iniciado).getTime() - new Date(a.iniciado).getTime())
       break
     case 'due-date':
-      sorted.sort((a, b) => new Date(a.prazo).getTime() - new Date(b.prazo).getTime()) // Prazo mais próximo
+      sorted.sort((a, b) => new Date(a.prazo).getTime() - new Date(b.prazo).getTime())
       break
   }
-
   return sorted
 })
 
@@ -37,7 +36,7 @@ const sortedProjects = computed(() => {
     <section class="empty-state" v-if="projectsInProgress.length === 0">
       <h1>Nenhum projeto</h1>
       <p>Clique no botão abaixo para criar o primeiro e gerenciá-lo.</p>
-      <Button></Button>
+      <Button class="new-project-button"></Button>
     </section>
     <section v-else class="cards-container">
       <div class="top-information">
@@ -55,13 +54,13 @@ const sortedProjects = computed(() => {
               <option value="due-date">Prazo mais próximo</option>
             </select>
           </div>
-        <Button class="new-project-button"></Button>
+        <Button></Button>
         </div>
       </div>
       
         <div class="cards-wrapper">
           <ProjectCard
-          v-for="(project, index) in projectsInProgress"
+          v-for="(project, index) in sortedProjects"
           :key="project.nome"
           :projeto="project"
           :index="index"
@@ -81,11 +80,21 @@ const sortedProjects = computed(() => {
 }
 
 .empty-state {
+   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
   text-align: center;
   background-color: #fff;
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  
+}
+.new-project-button {
+  display: flex;
+  justify-content: center;
 }
 
 .empty-state h1 {
@@ -98,6 +107,7 @@ const sortedProjects = computed(() => {
   color: var(--text-light);
   margin-bottom: 2rem;
 }
+
 
 .top-information {
   display: flex;
@@ -173,13 +183,12 @@ const sortedProjects = computed(() => {
   transition: left 0.3s;
 }
 
-/* Quando o toggle está ativado */
 .toggle:checked + .toggle-label {
-  background-color: yellow; /* Cor de fundo amarela */
+  background-color: yellow;
 }
 
 .toggle:checked + .toggle-label::before {
-  left: 25px; /* Move o botão para a direita */
+  left: 25px;
 }
 
 .sort-dropdown {

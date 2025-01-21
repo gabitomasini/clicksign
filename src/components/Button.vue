@@ -1,6 +1,6 @@
 <template>
   <button class="new-project-button">
-    <span class="button-icon">➕</span>
+    <img class="add-icon" src="../assets/add.svg" alt="icon"/>
     <router-link to="/new-project" class="link-text">Novo Projeto</router-link>
   </button>
 </template>
@@ -10,16 +10,24 @@
 
 <style scoped>
 .new-project-button {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  padding: 0.8rem 1.5rem;
-  background-color: #695CCD;
-  color: #fff;
-  font-size: 1rem;
-  border: none;
-  border-radius: 4px;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px 35px;
+  border-radius: 30px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: opacity 0.2s;
+  border: none;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 22px;
+  background: #695ccd;
+    color: #ffffff;
+
+  &:hover {
+    opacity: 0.9;
+  }
 }
 
 .new-project-button .button-icon {
@@ -37,5 +45,10 @@
 
 .link-text:hover {
   color: inherit;
+}
+
+.add-icon {
+  width: 30px;
+  height: 30px;
 }
 </style>
