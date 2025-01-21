@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, computed } from "vue";
 
 export default defineComponent({
   name: "ProjectCard",
@@ -14,12 +14,22 @@ export default defineComponent({
         favorito: boolean;
       },
       required: true
+    },
+    index: {
+      type: Number,
+      default: 0
     }
   },
   setup(props) {
+    const isDropdownOpen = ref(false);
+
     const toggleFavorito = () => {
       props.projeto.favorito = !props.projeto.favorito;
       // Atualize o localStorage ou outras ações necessárias aqui
+    };
+
+    const toggleDropdown = () => {
+      isDropdownOpen.value = !isDropdownOpen.value;
     };
 
     const formatarData = (data: string): string => {
@@ -27,8 +37,12 @@ export default defineComponent({
       return new Date(data).toLocaleDateString("pt-BR", opcoes);
     };
 
-    return { toggleFavorito, formatarData };
-  }
+    const formatedIndex = computed(() => {
+    return props.index <= 9 ? '0' + (props.index + 1) : props.index + 1;
+  });
+
+  return { toggleFavorito, toggleDropdown, isDropdownOpen, formatarData, formatedIndex };
+},
 });
 </script>
 
@@ -37,23 +51,24 @@ export default defineComponent({
   <div class="card">
     <div class="card-header">
       <img :src="projeto.imagem" alt="Capa do projeto" class="card-image" />
-      <div class="card-overlay">
-        <h2>{{ projeto.nome }}</h2>
-      </div>
-      <button class="favoritar" @click="toggleFavorito">
+      <!-- <button class="favoritar" @click="toggleFavorito">
         <span :class="projeto.favorito ? 'favorito' : 'nao-favorito'">★</span>
-      </button>
+      </button> -->
+      <button class="menu-button" @click="toggleDropdown">...</button>
+      <div class="dropdown-menu" v-if="isDropdownOpen">
+        <a href="#">Editar</a>
+        <a href="#">Remover</a>
+      </div>
     </div>
     <div class="card-body">
-      <h3>{{ projeto.nome }}</h3>
-      <p>Cliente: <strong>{{ projeto.cliente }}</strong></p>
+      <h3>Projeto {{ formatedIndex }}</h3>
+      <p>Cliente: {{ projeto.cliente }}</p>
       <div class="card-dates">
+        <hr>
         <div>
-          <span>📅</span>
           <p>{{ formatarData(projeto.dataInicio) }}</p>
         </div>
         <div>
-          <span>📅</span>
           <p>{{ formatarData(projeto.dataFinal) }}</p>
         </div>
       </div>
@@ -69,6 +84,8 @@ export default defineComponent({
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: Arial, sans-serif;
+  flex: 0 1 300px;
+  margin: 0;
 }
 
 .card-header {
@@ -82,30 +99,15 @@ export default defineComponent({
   object-fit: cover;
 }
 
-.card-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  padding: 10px;
-}
-
 .card-overlay h2 {
   font-size: 1.2rem;
   margin: 0;
 }
 
-.card-overlay p {
-  margin: 0;
-  font-size: 0.9rem;
-}
-
 .favoritar {
   position: absolute;
   top: 10px;
-  right: 10px;
+  right: 40px;
   background: none;
   border: none;
   cursor: pointer;
@@ -121,34 +123,76 @@ export default defineComponent({
   color: gray;
 }
 
+.menu-button {
+  position: absolute;
+  top: 130px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: gray;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 40px;
+  right: 10px;
+  background-color: white;
+  color: #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.dropdown-menu a:hover {
+  background-color: #f1f1f1;
+}
+
 .card-body {
   padding: 15px;
+  display: block;
 }
 
-.card-body h3 {
-  font-size: 1.2rem;
-  margin: 0 0 5px;
+h3 {
+  color: #1f1283;
 }
 
+.card-body h3, 
 .card-body p {
-  margin: 5px 0;
-  color: #555;
+  width: 100%;
+  text-align: left;
+  margin: 10px 0;
 }
 
 .card-dates {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
   margin-top: 10px;
 }
 
 .card-dates div {
   display: flex;
   align-items: center;
-  gap: 5px;
   color: #666;
 }
 
-.card-dates span {
-  font-size: 1.2rem;
+hr {
+  border: none;
+  height: 1px;
+  background-color: #e9e9e9;
+  margin: 10px 0;
 }
+
 </style>

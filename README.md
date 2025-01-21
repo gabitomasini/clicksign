@@ -1,5 +1,17 @@
-# Vue 3 + TypeScript + Vite
+# Gerenciador de projetos
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Descrição
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+Teste para o processo seletivo de Desenvolvedora Frontend Pleno para empresa Clicksign, por Gabriela Elisa Tomasini.
+
+## Instalação de dependências
+
+```bash
+npm install
+```
+
+## Como rodar o projeto
+
+```sh
+npm run dev
+```

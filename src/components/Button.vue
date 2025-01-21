@@ -13,7 +13,7 @@
   display: inline-flex;
   align-items: center;
   padding: 0.8rem 1.5rem;
-  background-color: var(--primary-color);
+  background-color: #695CCD;
   color: #fff;
   font-size: 1rem;
   border: none;
