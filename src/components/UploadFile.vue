@@ -3,7 +3,6 @@
     <div v-if="filePreview" class="file-prevew-container">
       <DisplayFile :filePreview="filePreview" />
     </div>
-    <div v-else-if=""></div>
     <div v-else class="upload-container">
       <img class="upload-icon" src="../assets/upload.svg" alt="Upload" />
       <p>Escolha uma imagem .jpg ou .png no seu dispositivo</p>

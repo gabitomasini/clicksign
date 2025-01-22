@@ -1,76 +1,66 @@
-<script lang="ts">
-import { defineComponent, reactive, watchEffect } from "vue";
-import UploadFile from "./UploadFile.vue";
-import { Projeto } from "../interface/project";
-import Button from "./Button.vue";
-import { getProjects, setProjects } from "../helpers/LocalStorage";
+<script setup lang="ts">
+import { reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import UploadFile from "./UploadFile.vue";
+import Button from "./Button.vue";
+import { Projeto } from "../interface/project";
+import { getProjects, setProjects } from "../helpers/LocalStorage";
 
-export default defineComponent({
-  name: "NovoProjeto",
-  components: {
-    UploadFile,
-    Button,
-  },
-  setup() {
-    const projeto = reactive<Projeto>({
-      id: Math.floor(Math.random() * 1000),
-      nome: "",
-      cliente: "",
-      dataInicio: "",
-      dataFinal: "",
-      capa: "",
-      favorito: false,
-    });
+const router = useRouter();
+const route = useRoute();
 
-    const router = useRouter();
-    const route = useRoute();
-    const projectId = Array.isArray(route.params.projectId)
-      ? route.params.projectId[0]
-      : route.params.projectId;
+const projeto = reactive<Projeto>({
+  id: Math.floor(Math.random() * 1000),
+  nome: "",
+  cliente: "",
+  dataInicio: "",
+  dataFinal: "",
+  capa: "",
+  favorito: false,
+});
 
+const projectId = Array.isArray(route.params.projectId)
+  ? route.params.projectId[0]
+  : route.params.projectId;
+
+if (projectId) {
+  const projetosSalvos = getProjects();
+  const projetoExistente = projetosSalvos.find(
+    (p) => p.id === parseInt(projectId)
+  );
+
+  if (projetoExistente) {
+    Object.assign(projeto, projetoExistente);
+  }
+}
+
+const saveProject = () => {
+  if (
+    projeto.nome &&
+    projeto.cliente &&
+    projeto.dataInicio &&
+    projeto.dataFinal &&
+    projeto.capa
+  ) {
+    const projetosSalvos = getProjects();
     if (projectId) {
-      const projetosSalvos = getProjects();
-      const projetoExistente = projetosSalvos.find(
+      const index = projetosSalvos.findIndex(
         (p) => p.id === parseInt(projectId)
       );
-
-      if (projetoExistente) {
-        Object.assign(projeto, projetoExistente);
+      if (index !== -1) {
+        projetosSalvos[index] = { ...projeto };
       }
+    } else {
+      projetosSalvos.push({ ...projeto });
     }
+    setProjects(projetosSalvos);
+    router.push("/");
+  }
+};
 
-    const saveProject = () => {
-      if (
-        projeto.nome &&
-        projeto.cliente &&
-        projeto.dataInicio &&
-        projeto.dataFinal &&
-        projeto.capa
-      ) {
-        const projetosSalvos = getProjects();
-        if (projectId) {
-          const index = projetosSalvos.findIndex(
-            (p) => p.id === parseInt(projectId)
-          );
-          if (index !== -1) {
-            projetosSalvos[index] = { ...projeto };
-          }
-        } else {
-          projetosSalvos.push({ ...projeto });
-        }
-        setProjects(projetosSalvos);
-        router.push("/");
-      }
-    };
-
-    const handleFileUpload = (base64: string) => {
-      projeto.capa = base64;
-    };
-
-    return { projeto, saveProject, handleFileUpload };
-  },
-});
+const handleFileUpload = (base64: string) => {
+  projeto.capa = base64;
+};
 </script>
 
 <template>
