@@ -4,5 +4,6 @@ export interface Projeto {
   cliente: string;
   dataInicio: string;
   dataFinal: string;
-  capa: string | null;
+  capa: string;
+  favorito: boolean;
 }

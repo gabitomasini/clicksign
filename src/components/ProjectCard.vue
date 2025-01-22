@@ -1,93 +1,89 @@
-<script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+<script setup lang="ts">
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
 import DisplayFile from "./DisplayFile.vue";
 import { getProjects, setProjects } from "../helpers/LocalStorage";
+import { Projeto } from "../interface/project";
 
-export default defineComponent({
-  name: "ProjectCard",
-  components: {
-    DisplayFile, // Registre o componente aqui
-  },
-  props: {
-    projeto: {
-      type: Object as () => {
-        id: number;
-        nome: string;
-        cliente: string;
-        dataInicio: string;
-        dataFinal: string;
-        capa: string;
-        favorito: boolean;
-      },
-      required: true,
-    },
-    index: {
-      type: Number,
-      default: 0,
-    },
-  },
-  setup(props) {
-    const isDropdownOpen = ref(false);
+const emit = defineEmits<{
+  (e: "remove-project", projetosAtualizados: Projeto[]): void;
+  (e: "toggle-favorite", projetosAtualizados: Projeto[]): void;
+}>();
 
-    const toggleFavorito = (): void => {
-      props.projeto.favorito = !props.projeto.favorito;
+const props = defineProps<{
+  projeto: {
+    id: number;
+    nome: string;
+    cliente: string;
+    dataInicio: string;
+    dataFinal: string;
+    capa: string;
+    favorito: boolean;
+  };
+  index: number;
+}>();
 
-      // Obter todos os projetos do LocalStorage
-      const projetos = getProjects();
+const router = useRouter();
 
-      // Atualizar o projeto específico na lista
-      const projetosAtualizados = projetos.map((p) =>
-        p.id === props.projeto.id ? props.projeto : p
-      );
+const isDropdownOpen = ref(false);
 
-      // Salvar os projetos atualizados no LocalStorage
-      setProjects(projetosAtualizados);
-    };
+const isFavorite = ref(props.projeto.favorito);
 
-    const toggleDropdown = () => {
-      isDropdownOpen.value = !isDropdownOpen.value;
-    };
-
-    const formatarData = (data: string): string => {
-      const dataLocal = new Date(data + "T00:00:00");
-      const opcoes = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      } as const;
-
-      return dataLocal.toLocaleDateString("pt-BR", opcoes);
-    };
-
-    const formatedIndex = computed(() => {
-      return props.index <= 9 ? "0" + (props.index + 1) : props.index + 1;
-    });
-
-    return {
-      toggleFavorito,
-      toggleDropdown,
-      isDropdownOpen,
-      formatarData,
-      formatedIndex,
-    };
-  },
+const formatedIndex = computed(() => {
+  return props.index <= 9 ? "0" + (props.index + 1) : props.index + 1;
 });
+
+const toggleFavorite = (): void => {
+  const projetos = getProjects() || [];
+  const projetosAtualizados = projetos.map((p) =>
+    p.id === props.projeto.id ? { ...p, favorito: !p.favorito } : p
+  );
+  isFavorite.value = !isFavorite.value;
+  emit("toggle-favorite", projetosAtualizados);
+};
+
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
+
+const removeProject = () => {
+  const projetos = getProjects();
+  const projetosAtualizados = projetos.filter((p) => p.id !== props.projeto.id);
+  setProjects(projetosAtualizados);
+  emit("remove-project", projetosAtualizados);
+};
+
+const formatarData = (data: string): string => {
+  const dataLocal = new Date(data + "T00:00:00");
+  const opcoes = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  } as const;
+
+  return dataLocal.toLocaleDateString("pt-BR", opcoes);
+};
+
+const editProject = () => {
+  console.log("editProject");
+  router.push(`/edit-project/${props.projeto.id}`);
+};
 </script>
 
 <template>
   <div class="card">
     <div class="card-header">
       <DisplayFile :filePreview="projeto.capa"></DisplayFile>
-      <button class="favoritar" @click="toggleFavorito()">
+      <button class="favoritar" @click="toggleFavorite()">
         <img
           src="../assets/star.svg"
-          :class="projeto.favorito ? 'favorito' : 'nao-favorito'"
+          :class="isFavorite ? 'favorito' : 'nao-favorito'"
         />
       </button>
       <button class="menu-button" @click="toggleDropdown">...</button>
       <div class="dropdown-menu" v-if="isDropdownOpen">
-        <a href="#">Editar</a>
-        <a href="#">Remover</a>
+        <a @click="editProject">Editar</a>
+        <a @click="removeProject">Remover</a>
       </div>
     </div>
     <div class="card-body">
@@ -145,11 +141,11 @@ export default defineComponent({
 }
 
 .favorito {
-  color: gold !important;
+  background-color: gold !important;
 }
 
 .nao-favorito {
-  color: transparent !important;
+  background-color: transparent !important;
 }
 
 img {

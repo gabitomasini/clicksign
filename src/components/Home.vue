@@ -3,7 +3,9 @@ import Button from "./Button.vue";
 import ProjectCard from "./ProjectCard.vue";
 
 import { useRouter } from "vue-router";
-import { computed, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
+import { Projeto } from "../interface/project";
+import { getProjects, setProjects } from "../helpers/LocalStorage";
 
 const router = useRouter();
 
@@ -11,9 +13,7 @@ const isFavorite = ref(false);
 
 const sortOption = ref("alphabetical");
 
-const projectsInProgress = computed(() => {
-  return JSON.parse(localStorage.getItem("projetos") || "[]");
-});
+const projectsInProgress = ref(getProjects() || []);
 
 const sortedProjects = computed(() => {
   let sorted = [...projectsInProgress.value];
@@ -38,9 +38,15 @@ const sortedProjects = computed(() => {
   return sorted;
 });
 
-function goToNewProject() {
+const goToNewProject = () => {
   router.push("/new-project");
-}
+};
+
+const updateProject = (projetosAtualizados: Projeto[]) => {
+  console.log("updateProject", projetosAtualizados);
+  projectsInProgress.value = projetosAtualizados;
+  setProjects(projetosAtualizados);
+};
 </script>
 
 <template>
@@ -93,6 +99,8 @@ function goToNewProject() {
           :key="project.nome"
           :projeto="project"
           :index="index"
+          @remove-project="updateProject"
+          @toggle-favorite="updateProject"
         />
       </div>
     </section>

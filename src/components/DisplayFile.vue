@@ -32,8 +32,8 @@ const props = defineProps({
 }
 
 .resizable-image {
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 50%;
+  max-height: 50%;
   object-fit: contain;
 }
 </style>

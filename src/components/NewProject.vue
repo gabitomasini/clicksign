@@ -1,10 +1,10 @@
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { defineComponent, reactive, watchEffect } from "vue";
 import UploadFile from "./UploadFile.vue";
 import { Projeto } from "../interface/project";
 import Button from "./Button.vue";
 import { getProjects, setProjects } from "../helpers/LocalStorage";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 export default defineComponent({
   name: "NovoProjeto",
@@ -19,12 +19,29 @@ export default defineComponent({
       cliente: "",
       dataInicio: "",
       dataFinal: "",
-      capa: null as string | null,
+      capa: "",
+      favorito: false,
     });
 
     const router = useRouter();
+    const route = useRoute();
+    const projectId = Array.isArray(route.params.projectId)
+      ? route.params.projectId[0]
+      : route.params.projectId;
 
-    const saveNewProject = () => {
+    // Se projectId existe, tentamos carregar os dados do projeto para edição
+    if (projectId) {
+      const projetosSalvos = getProjects();
+      const projetoExistente = projetosSalvos.find(
+        (p) => p.id === parseInt(projectId)
+      );
+
+      if (projetoExistente) {
+        Object.assign(projeto, projetoExistente); // Preenche os campos com os dados do projeto
+      }
+    }
+
+    const saveProject = () => {
       if (
         projeto.nome &&
         projeto.cliente &&
@@ -32,10 +49,21 @@ export default defineComponent({
         projeto.dataFinal &&
         projeto.capa
       ) {
-        const projetosSalvo = getProjects();
-        projetosSalvo.push({ ...projeto });
-        setProjects(projetosSalvo);
-        router.push("/");
+        const projetosSalvos = getProjects();
+        if (projectId) {
+          // Se existe um id, editamos o projeto
+          const index = projetosSalvos.findIndex(
+            (p) => p.id === parseInt(projectId)
+          );
+          if (index !== -1) {
+            projetosSalvos[index] = { ...projeto }; // Atualiza o projeto
+          }
+        } else {
+          // Se não existe um id, criamos um novo projeto
+          projetosSalvos.push({ ...projeto });
+        }
+        setProjects(projetosSalvos);
+        router.push("/"); // Navega para a página inicial
       }
     };
 
@@ -43,7 +71,7 @@ export default defineComponent({
       projeto.capa = base64;
     };
 
-    return { projeto, saveNewProject, handleFileUpload };
+    return { projeto, saveProject, handleFileUpload };
   },
 });
 </script>
@@ -51,10 +79,12 @@ export default defineComponent({
 <template>
   <div class="top-bar">
     <router-link to="/" class="voltar">← Voltar</router-link>
-    <h1 class="section-title">Novo projeto</h1>
+    <h1 class="section-title">
+      {{ projeto.id ? "Editar projeto" : "Novo projeto" }}
+    </h1>
   </div>
   <div class="container">
-    <form @submit.prevent="saveNewProject">
+    <form @submit.prevent="saveProject">
       <div class="form-group">
         <div class="label-span-container">
           <label for="nome">Nome do projeto </label><span>(Obrigatório)</span>
@@ -107,7 +137,7 @@ export default defineComponent({
         buttonClass="save-project"
         text="Salvar projeto"
         style="width: 100%"
-        @button-click="saveNewProject"
+        @button-click="saveProject"
       ></Button>
     </form>
   </div>
