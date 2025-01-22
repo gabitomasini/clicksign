@@ -2,6 +2,7 @@
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import DisplayFile from "./DisplayFile.vue";
+import Modal from "./Modal.vue";
 import { getProjects, setProjects } from "../helpers/LocalStorage";
 import { Projeto } from "../interface/project";
 
@@ -28,6 +29,8 @@ const router = useRouter();
 const isDropdownOpen = ref(false);
 
 const isFavorite = ref(props.projeto.favorito);
+
+const isModalVisible = ref(false);
 
 const formatedIndex = computed(() => {
   return props.index <= 9 ? "0" + (props.index + 1) : props.index + 1;
@@ -67,6 +70,19 @@ const formatarData = (data: string): string => {
 const editProject = () => {
   router.push(`/edit-project/${props.projeto.id}`);
 };
+
+const confirmRemove = () => {
+  isModalVisible.value = true;
+};
+
+const handleCancel = () => {
+  isModalVisible.value = false;
+};
+
+const handleConfirm = () => {
+  isModalVisible.value = false;
+  removeProject();
+};
 </script>
 
 <template>
@@ -82,7 +98,7 @@ const editProject = () => {
       <button class="menu-button" @click="toggleDropdown">...</button>
       <div class="dropdown-menu" v-if="isDropdownOpen">
         <a @click="editProject">Editar</a>
-        <a @click="removeProject">Remover</a>
+        <a @click="confirmRemove">Remover</a>
       </div>
     </div>
     <div class="card-body">
@@ -98,6 +114,13 @@ const editProject = () => {
         </div>
       </div>
     </div>
+    <Modal
+      :isVisible="isModalVisible"
+      title="Remover Projeto"
+      :projectName="projeto.nome"
+      @close="handleCancel"
+      @confirm="handleConfirm"
+    />
   </div>
 </template>
 
