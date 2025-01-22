@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import DisplayFile from "./DisplayFile.vue";
+import { getProjects, setProjects } from "../helpers/LocalStorage";
 
 export default defineComponent({
   name: "ProjectCard",
@@ -10,6 +11,7 @@ export default defineComponent({
   props: {
     projeto: {
       type: Object as () => {
+        id: number;
         nome: string;
         cliente: string;
         dataInicio: string;
@@ -27,9 +29,19 @@ export default defineComponent({
   setup(props) {
     const isDropdownOpen = ref(false);
 
-    const toggleFavorito = () => {
+    const toggleFavorito = (): void => {
       props.projeto.favorito = !props.projeto.favorito;
-      // Atualize o localStorage ou outras ações necessárias aqui
+
+      // Obter todos os projetos do LocalStorage
+      const projetos = getProjects();
+
+      // Atualizar o projeto específico na lista
+      const projetosAtualizados = projetos.map((p) =>
+        p.id === props.projeto.id ? props.projeto : p
+      );
+
+      // Salvar os projetos atualizados no LocalStorage
+      setProjects(projetosAtualizados);
     };
 
     const toggleDropdown = () => {
@@ -66,9 +78,12 @@ export default defineComponent({
   <div class="card">
     <div class="card-header">
       <DisplayFile :filePreview="projeto.capa"></DisplayFile>
-      <!-- <button class="favoritar" @click="toggleFavorito">
-        <span :class="projeto.favorito ? 'favorito' : 'nao-favorito'">★</span>
-      </button> -->
+      <button class="favoritar" @click="toggleFavorito()">
+        <img
+          src="../assets/star.svg"
+          :class="projeto.favorito ? 'favorito' : 'nao-favorito'"
+        />
+      </button>
       <button class="menu-button" @click="toggleDropdown">...</button>
       <div class="dropdown-menu" v-if="isDropdownOpen">
         <a href="#">Editar</a>
@@ -121,21 +136,24 @@ export default defineComponent({
 
 .favoritar {
   position: absolute;
-  top: 10px;
-  right: 40px;
+  top: 137px;
+  right: 42px;
   background: none;
   border: none;
   cursor: pointer;
   font-size: 1.5rem;
-  color: gold;
 }
 
 .favorito {
-  color: gold;
+  color: gold !important;
 }
 
 .nao-favorito {
-  color: gray;
+  color: transparent !important;
+}
+
+img {
+  width: 20px;
 }
 
 .menu-button {

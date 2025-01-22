@@ -19,15 +19,10 @@ import { onMounted } from "vue";
 const props = defineProps({
   filePreview: String,
 });
-
-onMounted(() => {
-  console.log("File preview:", props.filePreview);
-});
 </script>
 
 <style scoped>
 .image-container {
-  /* Garantir que o contêiner ocupe o máximo do pai */
   width: 100%;
   height: 100%;
   display: flex;
@@ -37,9 +32,8 @@ onMounted(() => {
 }
 
 .resizable-image {
-  /* A imagem vai ocupar no máximo 100% da largura e altura do contêiner */
-  max-width: 40%;
-  max-height: 40%;
-  object-fit: contain; /* Isso mantém a proporção da imagem */
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 </style>
