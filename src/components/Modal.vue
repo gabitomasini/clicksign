@@ -3,7 +3,7 @@
     <div class="modal">
       <div class="modal-header">
         <div class="icon">
-          <img src="../assets/trash-light.svg" alt="Ícone de lixeira" />
+          <img src="../assets/lixeira.png" alt="Ícone de lixeira" />
         </div>
         <h2>Remover projeto</h2>
         <hr class="modal-divider" />
@@ -81,14 +81,14 @@ const confirmRemoval = () => {
   align-items: center;
 }
 
-.modal-header .icon {
+.icon {
   position: absolute;
   background-color: #5e5ce6;
   border-radius: 50%;
   width: 30px;
   height: 30px;
   padding: 10px;
-  bottom: 380px;
+  top: 310px;
 }
 
 .modal-header img {

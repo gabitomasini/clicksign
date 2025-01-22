@@ -123,7 +123,7 @@ const handleFileUpload = (base64: string) => {
         </div>
       </div>
       <Button
-        buttonClass="save-project"
+        buttonClass="btn-default-1"
         text="Salvar projeto"
         style="width: 100%"
         @button-click="saveProject"

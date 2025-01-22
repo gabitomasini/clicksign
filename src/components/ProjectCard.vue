@@ -5,6 +5,8 @@ import DisplayFile from "./DisplayFile.vue";
 import Modal from "./Modal.vue";
 import { getProjects, setProjects } from "../helpers/LocalStorage";
 import { Projeto } from "../interface/project";
+import favoriteFilled from "../assets/favorite-filled.png";
+import favorite from "../assets/favorite.png";
 
 const emit = defineEmits<{
   (e: "remove-project", projetosAtualizados: Projeto[]): void;
@@ -31,6 +33,8 @@ const isDropdownOpen = ref(false);
 const isFavorite = ref(props.projeto.favorito);
 
 const isModalVisible = ref(false);
+
+const imageSrc = computed(() => (isFavorite.value ? favoriteFilled : favorite));
 
 const toggleFavorite = (): void => {
   const projetos = getProjects() || [];
@@ -65,10 +69,12 @@ const formatarData = (data: string): string => {
 
 const editProject = () => {
   router.push(`/edit-project/${props.projeto.id}`);
+  toggleDropdown();
 };
 
 const confirmRemove = () => {
   isModalVisible.value = true;
+  toggleDropdown();
 };
 
 const handleCancel = () => {
@@ -86,10 +92,7 @@ const handleConfirm = () => {
     <div class="card-header">
       <DisplayFile :filePreview="projeto.capa"></DisplayFile>
       <button class="favoritar" @click="toggleFavorite()">
-        <img
-          src="../assets/star-edited.svg"
-          :class="isFavorite ? 'favorito' : 'nao-favorito'"
-        />
+        <img :src="imageSrc" />
       </button>
       <button class="menu-button" @click="toggleDropdown"></button>
       <div class="dropdown-menu" v-if="isDropdownOpen">
@@ -160,14 +163,8 @@ const handleConfirm = () => {
   font-size: 1.5rem;
 }
 
-.favorito {
-  width: 20px;
-  background-color: gold !important;
-}
-
-.nao-favorito {
-  width: 20px;
-  background-color: transparent !important;
+.favoritar img {
+  width: 25px;
 }
 
 .calendar-icon {
