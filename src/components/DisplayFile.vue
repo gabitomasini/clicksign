@@ -23,17 +23,15 @@ const props = defineProps({
 
 <style scoped>
 .image-container {
-  width: 100%;
-  height: 100%;
+  height: 170px;
   display: flex;
   justify-content: center;
-  align-items: center;
   overflow: hidden;
 }
 
 .resizable-image {
-  max-width: 50%;
-  max-height: 50%;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 </style>

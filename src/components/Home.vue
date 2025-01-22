@@ -24,8 +24,7 @@ const sortedAndFilteredProjects = computed(() => {
     filtered = filtered.filter((project) => project.favorito);
   }
 
-  if (searchQuery.value) {
-    console.log("oiiii", searchQuery.value);
+  if (searchQuery.value && searchQuery.value.length >= 3) {
     filtered = filtered.filter((project) =>
       project.nome.toLowerCase().includes(searchQuery.value.toLowerCase())
     );

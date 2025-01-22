@@ -29,7 +29,6 @@ export default defineComponent({
       ? route.params.projectId[0]
       : route.params.projectId;
 
-    // Se projectId existe, tentamos carregar os dados do projeto para edição
     if (projectId) {
       const projetosSalvos = getProjects();
       const projetoExistente = projetosSalvos.find(
@@ -37,7 +36,7 @@ export default defineComponent({
       );
 
       if (projetoExistente) {
-        Object.assign(projeto, projetoExistente); // Preenche os campos com os dados do projeto
+        Object.assign(projeto, projetoExistente);
       }
     }
 
@@ -51,19 +50,17 @@ export default defineComponent({
       ) {
         const projetosSalvos = getProjects();
         if (projectId) {
-          // Se existe um id, editamos o projeto
           const index = projetosSalvos.findIndex(
             (p) => p.id === parseInt(projectId)
           );
           if (index !== -1) {
-            projetosSalvos[index] = { ...projeto }; // Atualiza o projeto
+            projetosSalvos[index] = { ...projeto };
           }
         } else {
-          // Se não existe um id, criamos um novo projeto
           projetosSalvos.push({ ...projeto });
         }
         setProjects(projetosSalvos);
-        router.push("/"); // Navega para a página inicial
+        router.push("/");
       }
     };
 
@@ -146,7 +143,7 @@ export default defineComponent({
 <style scoped>
 .container {
   max-width: 600px;
-  margin: 50px auto;
+  margin: 30px auto;
   background-color: #faf7ff;
   padding: 100px;
   border-radius: 10px;

@@ -95,7 +95,7 @@ const handleConfirm = () => {
           :class="isFavorite ? 'favorito' : 'nao-favorito'"
         />
       </button>
-      <button class="menu-button" @click="toggleDropdown">...</button>
+      <button class="menu-button" @click="toggleDropdown"></button>
       <div class="dropdown-menu" v-if="isDropdownOpen">
         <a @click="editProject">Editar</a>
         <a @click="confirmRemove">Remover</a>
@@ -107,9 +107,11 @@ const handleConfirm = () => {
       <div class="card-dates">
         <hr />
         <div>
+          <img src="../assets/calendar_1.svg" class="calendar-icon" />
           <p>{{ formatarData(projeto.dataInicio) }}</p>
         </div>
         <div>
+          <img src="../assets/calendar_2.svg" class="calendar-icon" />
           <p>{{ formatarData(projeto.dataFinal) }}</p>
         </div>
       </div>
@@ -154,7 +156,7 @@ const handleConfirm = () => {
 
 .favoritar {
   position: absolute;
-  top: 137px;
+  top: 125px;
   right: 42px;
   background: none;
   border: none;
@@ -163,32 +165,50 @@ const handleConfirm = () => {
 }
 
 .favorito {
+  width: 20px;
   background-color: gold !important;
 }
 
 .nao-favorito {
+  width: 20px;
   background-color: transparent !important;
 }
 
-img {
-  width: 20px;
+.calendar-icon {
+  width: 25px;
+  margin-right: 10px;
 }
 
 .menu-button {
   position: absolute;
-  top: 130px;
+  top: 124px;
   right: 10px;
-  background: none;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 50%;
   border: none;
   cursor: pointer;
-  font-size: 1.5rem;
-  color: gray;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.menu-button:hover {
+  background-color: #f9f9f9;
+}
+
+.menu-button::before {
+  content: "•••";
+  font-size: 16px;
+  color: #7e57c2;
 }
 
 .dropdown-menu {
   position: absolute;
-  top: 40px;
-  right: 10px;
+  top: 150px;
+  right: 35px;
   background-color: white;
   color: #333;
   border-radius: 8px;
@@ -210,7 +230,7 @@ img {
 }
 
 .card-body {
-  padding: 15px;
+  padding: 30px 15px 10px 15px;
   display: block;
 }
 
