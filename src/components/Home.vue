@@ -67,7 +67,7 @@ const updateProject = (projetosAtualizados: Projeto[]) => {
       <h1>Nenhum projeto</h1>
       <p>Clique no botão abaixo para criar o primeiro e gerenciá-lo.</p>
       <Button
-        buttonClass="add-new-project"
+        buttonClass="new-project-button"
         text="Novo projeto"
         @button-click="goToNewProject"
       ></Button>

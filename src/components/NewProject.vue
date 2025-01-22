@@ -60,7 +60,6 @@ const saveProject = () => {
 };
 
 const handleFileUpload = (base64: string) => {
-  console.log("handleFileUpload", base64);
   projeto.capa = base64;
 };
 </script>
