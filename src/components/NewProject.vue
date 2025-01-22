@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive } from "vue";
+import { computed, reactive, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import UploadFile from "./UploadFile.vue";
 import Button from "./Button.vue";
@@ -7,7 +7,10 @@ import { Projeto } from "../interface/project";
 import { getProjects, setProjects } from "../helpers/LocalStorage";
 
 const router = useRouter();
+
 const route = useRoute();
+
+const savedProjects = computed(() => getProjects());
 
 const projeto = reactive<Projeto>({
   id: Math.floor(Math.random() * 1000),
@@ -24,8 +27,7 @@ const projectId = Array.isArray(route.params.projectId)
   : route.params.projectId;
 
 if (projectId) {
-  const projetosSalvos = getProjects();
-  const projetoExistente = projetosSalvos.find(
+  const projetoExistente = savedProjects.value.find(
     (p) => p.id === parseInt(projectId)
   );
 
@@ -39,8 +41,7 @@ const saveProject = () => {
     projeto.nome &&
     projeto.cliente &&
     projeto.dataInicio &&
-    projeto.dataFinal &&
-    projeto.capa
+    projeto.dataFinal
   ) {
     const projetosSalvos = getProjects();
     if (projectId) {
@@ -59,6 +60,7 @@ const saveProject = () => {
 };
 
 const handleFileUpload = (base64: string) => {
+  console.log("handleFileUpload", base64);
   projeto.capa = base64;
 };
 </script>
@@ -117,7 +119,7 @@ const handleFileUpload = (base64: string) => {
       <div class="form-group">
         <div class="project-cover">
           <label>Capa do projeto</label>
-          <UploadFile @file-uploaded="handleFileUpload" />
+          <UploadFile @file-uploaded="handleFileUpload" :capa="projeto.capa" />
         </div>
       </div>
       <Button

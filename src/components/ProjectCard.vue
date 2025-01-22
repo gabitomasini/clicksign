@@ -32,10 +32,6 @@ const isFavorite = ref(props.projeto.favorito);
 
 const isModalVisible = ref(false);
 
-const formatedIndex = computed(() => {
-  return props.index <= 9 ? "0" + (props.index + 1) : props.index + 1;
-});
-
 const toggleFavorite = (): void => {
   const projetos = getProjects() || [];
   const projetosAtualizados = projetos.map((p) =>
@@ -91,7 +87,7 @@ const handleConfirm = () => {
       <DisplayFile :filePreview="projeto.capa"></DisplayFile>
       <button class="favoritar" @click="toggleFavorite()">
         <img
-          src="../assets/star.svg"
+          src="../assets/star-edited.svg"
           :class="isFavorite ? 'favorito' : 'nao-favorito'"
         />
       </button>
@@ -102,7 +98,7 @@ const handleConfirm = () => {
       </div>
     </div>
     <div class="card-body">
-      <h3>Projeto {{ formatedIndex }}</h3>
+      <h3>{{ projeto.nome }}</h3>
       <p>Cliente: {{ projeto.cliente }}</p>
       <div class="card-dates">
         <hr />
@@ -156,7 +152,7 @@ const handleConfirm = () => {
 
 .favoritar {
   position: absolute;
-  top: 125px;
+  top: 127px;
   right: 42px;
   background: none;
   border: none;

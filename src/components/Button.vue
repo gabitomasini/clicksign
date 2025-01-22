@@ -1,5 +1,5 @@
 <template>
-  <button class="new-project-button" @click="handleClick">
+  <button :class="[buttonClass]" @click="handleClick">
     <p class="add" v-if="buttonClass === 'new-project-button'">+</p>
     <slot>{{ text }}</slot>
   </button>
@@ -61,6 +61,52 @@ export default {
 
 .new-project-button:hover {
   background-color: #3b3bce;
+}
+
+.btn-default-1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 45px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  border: none;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  background: #695ccd;
+  color: #ffffff;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.btn-default-1 .button-icon {
+  margin-right: 0.5rem;
+}
+
+.btn-default-1:hover {
+  background-color: #3b3bce;
+}
+
+.btn-default-2 {
+  background-color: #ffffff;
+  color: #695ccd;
+  border: 1px solid #695ccd;
+  border-radius: 30px;
+  padding: 12px 45px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.9;
+  }
 }
 
 .link-text {

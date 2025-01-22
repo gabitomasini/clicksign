@@ -11,10 +11,16 @@
       <p>Essa ação removerá definitivamente o projeto:</p>
       <h3>{{ projectName }}</h3>
       <div class="modal-actions">
-        <button class="cancel-button" @click="closeModal">Cancelar</button>
-        <button class="confirm-button" @click="confirmRemoval">
-          Confirmar
-        </button>
+        <Button
+          text="Cancelar"
+          @button-click="closeModal"
+          buttonClass="btn-default-2"
+        ></Button>
+        <Button
+          text="Confirmar"
+          @button-click="confirmRemoval"
+          buttonClass="btn-default-1"
+        ></Button>
       </div>
     </div>
   </div>
@@ -22,6 +28,7 @@
 
 <script setup lang="ts">
 import { defineProps, defineEmits } from "vue";
+import Button from "./Button.vue";
 
 defineProps({
   projectName: {
@@ -72,14 +79,16 @@ const confirmRemoval = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 20px;
 }
 
 .modal-header .icon {
+  position: absolute;
   background-color: #5e5ce6;
   border-radius: 50%;
+  width: 30px;
+  height: 30px;
   padding: 10px;
-  margin-bottom: 10px;
+  bottom: 380px;
 }
 
 .modal-header img {
@@ -88,6 +97,8 @@ const confirmRemoval = () => {
 }
 
 .modal-header h2 {
+  margin-top: 30px;
+  margin-bottom: 5px;
   font-size: 18px;
   font-weight: bold;
   color: #5e5ce6;
@@ -96,7 +107,7 @@ const confirmRemoval = () => {
 p {
   font-size: 14px;
   color: #555;
-  margin-bottom: 10px;
+  margin: 10px 0;
 }
 
 h3 {
@@ -127,7 +138,7 @@ button {
 .modal-divider {
   width: 100%;
   border: none;
-  border-top: 1px solid #ccc;
-  margin: 10px 0; /* Espaço acima e abaixo do hr */
+  border-top: 1px solid #9f9f9f;
+  margin: 10px 0;
 }
 </style>

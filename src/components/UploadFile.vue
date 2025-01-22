@@ -1,21 +1,22 @@
 <template>
-  <div class="form-group card-upload">
-    <div v-if="filePreview" class="file-prevew-container">
-      <DisplayFile :filePreview="filePreview" />
-    </div>
-    <div v-else class="upload-container">
-      <img class="upload-icon" src="../assets/upload.svg" alt="Upload" />
-      <p>Escolha uma imagem .jpg ou .png no seu dispositivo</p>
-      <button class="select-button">
-        <input
-          type="file"
-          id="capa"
-          accept=".jpg, .png"
-          @change="handleFileUpload"
-        />
-        <span>Selecionar</span>
-      </button>
-    </div>
+  <div v-if="filePreview" class="file-prevew-container">
+    <button class="apagar" @click="removePhoto">
+      <img src="../assets/trash.svg" />
+    </button>
+    <DisplayFile :filePreview="filePreview" containerHeight="300px" />
+  </div>
+  <div v-else class="form-group card-upload">
+    <img class="upload-icon" src="../assets/upload.svg" alt="Upload" />
+    <p>Escolha uma imagem .jpg ou .png no seu dispositivo</p>
+    <button class="select-button">
+      <input
+        type="file"
+        id="capa"
+        accept=".jpg, .png"
+        @change="handleFileUpload"
+      />
+      <span>Selecionar</span>
+    </button>
   </div>
 </template>
 
@@ -23,13 +24,18 @@
 import { ref } from "vue";
 import DisplayFile from "./DisplayFile.vue";
 
-const filePreview = ref(null);
+const props = defineProps({
+  capa: String,
+});
 
-const checkIfFileExists = (file) => {
-  return file ? true : false;
-};
+const filePreview = ref(props?.capa);
 
 const emit = defineEmits(["file-uploaded"]);
+
+const removePhoto = () => {
+  filePreview.value = null;
+  emit("file-uploaded", null);
+};
 
 const toBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -125,5 +131,29 @@ const handleFileUpload = async (event) => {
   border: 1px solid #cccccc;
   border-radius: 8px;
   background-color: #f0f0f0;
+}
+
+.file-prevew-container {
+  position: relative;
+}
+img {
+  width: 15px;
+}
+.apagar {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 30px;
+  height: 30px;
+  background: #fff;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+
+  &:hover {
+    opacity: 0.9;
+  }
 }
 </style>
