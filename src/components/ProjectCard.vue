@@ -65,7 +65,6 @@ const formatarData = (data: string): string => {
 };
 
 const editProject = () => {
-  console.log("editProject");
   router.push(`/edit-project/${props.projeto.id}`);
 };
 </script>

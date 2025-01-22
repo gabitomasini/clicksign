@@ -15,27 +15,32 @@ const sortOption = ref("alphabetical");
 
 const projectsInProgress = ref(getProjects() || []);
 
-const sortedProjects = computed(() => {
-  let sorted = [...projectsInProgress.value];
+const sortedAndFilteredProjects = computed(() => {
+  let filtered = [...projectsInProgress.value];
+
+  if (isFavorite.value) {
+    filtered = filtered.filter((project) => project.favorito);
+  }
 
   switch (sortOption.value) {
     case "alphabetical":
-      sorted.sort((a, b) => a.nome.localeCompare(b.nome));
+      filtered.sort((a, b) => a.nome.localeCompare(b.nome));
       break;
     case "recent":
-      sorted.sort(
+      filtered.sort(
         (a, b) =>
           new Date(b.dataInicio).getTime() - new Date(a.dataInicio).getTime()
       );
       break;
     case "due-date":
-      sorted.sort(
+      filtered.sort(
         (a, b) =>
           new Date(b.dataFinal).getTime() - new Date(a.dataFinal).getTime()
       );
       break;
   }
-  return sorted;
+
+  return filtered;
 });
 
 const goToNewProject = () => {
@@ -43,7 +48,6 @@ const goToNewProject = () => {
 };
 
 const updateProject = (projetosAtualizados: Projeto[]) => {
-  console.log("updateProject", projetosAtualizados);
   projectsInProgress.value = projetosAtualizados;
   setProjects(projetosAtualizados);
 };
@@ -95,7 +99,7 @@ const updateProject = (projetosAtualizados: Projeto[]) => {
 
       <div class="cards-wrapper">
         <ProjectCard
-          v-for="(project, index) in sortedProjects"
+          v-for="(project, index) in sortedAndFilteredProjects"
           :key="project.nome"
           :projeto="project"
           :index="index"
