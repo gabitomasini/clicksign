@@ -3,13 +3,15 @@ import Button from "./Button.vue";
 import ProjectCard from "./ProjectCard.vue";
 
 import { useRouter } from "vue-router";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, inject, onMounted, Ref, ref } from "vue";
 import { Projeto } from "../interface/project";
 import { getProjects, setProjects } from "../helpers/LocalStorage";
 
 const router = useRouter();
 
 const isFavorite = ref(false);
+
+const searchQuery = inject("searchQuery") as Ref<string>;
 
 const sortOption = ref("alphabetical");
 
@@ -20,6 +22,13 @@ const sortedAndFilteredProjects = computed(() => {
 
   if (isFavorite.value) {
     filtered = filtered.filter((project) => project.favorito);
+  }
+
+  if (searchQuery.value) {
+    console.log("oiiii", searchQuery.value);
+    filtered = filtered.filter((project) =>
+      project.nome.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
   }
 
   switch (sortOption.value) {

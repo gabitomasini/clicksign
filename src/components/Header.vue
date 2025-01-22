@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, Ref } from "vue";
 
 import { useRoute } from "vue-router";
 
+import { inject } from "vue";
+
 const route = useRoute();
+
+const searchQuery = inject("searchQuery") as Ref<string>;
+
 const shouldDisplaySearchInput = computed(() => {
   return !route.path.includes("new-project");
 });
@@ -15,7 +20,12 @@ const shouldDisplaySearchInput = computed(() => {
       <img src="../assets/gerenciadorx.svg" alt="Teste" />
     </div>
     <div class="header-search" v-if="shouldDisplaySearchInput">
-      <input type="search" placeholder="Buscar..." />
+      <input
+        type="text"
+        v-model="searchQuery"
+        placeholder="Buscar..."
+        class="search-input"
+      />
     </div>
   </header>
 </template>

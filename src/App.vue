@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import Header from './components/Header.vue';
+import { provide, ref } from "vue";
+import Header from "./components/Header.vue";
+
+const searchQuery = ref("");
+
+provide("searchQuery", searchQuery);
 </script>
 
 <template>
